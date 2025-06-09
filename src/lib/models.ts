@@ -412,66 +412,66 @@ export const models: ModelList = {
 			thinking: false,
 		},
 		"GPT-4.1 mini": {
-            id: "gpt-4.1-mini",
-            features: {
-                tools: true,
-                attachmentsImage: true,
-            },
-            requiresApiKey: true,
-            requiresAuth: true,
-            contextLength: 1000000,
-            thinking: false,
-        },
-        "GPT-4": {
-            id: "gpt-4",
-            features: {},
-            requiresApiKey: true,
-            requiresAuth: true,
-            contextLength: 8192,
-            thinking: false,
-        },
-        "GPT-4 Turbo": {
-            id: "gpt-4-turbo",
-            features: {
-                attachmentsImage: true,
-            },
-            requiresApiKey: true,
-            requiresAuth: true,
-            contextLength: 128000,
-            thinking: false,
-        },
-        "GPT-3.5 Turbo": {
-            id: "gpt-3.5-turbo",
-            features: {},
-            requiresApiKey: true,
-            requiresAuth: true,
-            contextLength: 16000,
-            thinking: false,
-        },
+			id: "gpt-4.1-mini",
+			features: {
+				tools: true,
+				attachmentsImage: true,
+			},
+			requiresApiKey: true,
+			requiresAuth: true,
+			contextLength: 1000000,
+			thinking: false,
+		},
+		"GPT-4": {
+			id: "gpt-4",
+			features: {},
+			requiresApiKey: true,
+			requiresAuth: true,
+			contextLength: 8192,
+			thinking: false,
+		},
+		"GPT-4 Turbo": {
+			id: "gpt-4-turbo",
+			features: {
+				attachmentsImage: true,
+			},
+			requiresApiKey: true,
+			requiresAuth: true,
+			contextLength: 128000,
+			thinking: false,
+		},
+		"GPT-3.5 Turbo": {
+			id: "gpt-3.5-turbo",
+			features: {},
+			requiresApiKey: true,
+			requiresAuth: true,
+			contextLength: 16000,
+			thinking: false,
+		},
 	},
-    deepseek: {
-        "Deepseek Chat": {
-            id: "deepseek-chat",
-            requiresApiKey: true,
-            requiresAuth: true,
-            features: {
-                tools: true,
-            },
-            contextLength: 64000,
-            thinking: false,
-        },
-        "Deepseek Reasoner": {
-            id: "deepseek-reasoner",
-            requiresApiKey: true,
-            requiresAuth: true,
-            features: {
-                tools: true,
-            },
-            contextLength: 64000,
-            thinking: true,
-            exposesThinking: true,
-        }
-    }
+	deepseek: {
+		"Deepseek Chat": {
+			id: "deepseek-chat",
+			requiresApiKey: true,
+			requiresAuth: true,
+			features: {
+				tools: true,
+			},
+			contextLength: 64000,
+			thinking: false,
+		},
+		"Deepseek Reasoner": {
+			id: "deepseek-reasoner",
+			requiresApiKey: true,
+			requiresAuth: true,
+			features: {
+				tools: true,
+			},
+			contextLength: 64000,
+			thinking: true,
+			exposesThinking: true,
+		},
+	},
 };
 
 export interface Model {
@@ -491,9 +491,57 @@ export interface Model {
 	thinking: boolean;
 	thinkingLevels?: string[];
 	exposesThinking?: boolean;
-    freeUnlimited?: boolean;
+	freeUnlimited?: boolean;
 }
 
 interface ModelList {
 	[key: string]: { [key: string]: Model };
+}
+
+export function getModelById(modelId: string): Model | null {
+	for (const provider in models) {
+		const providerModels = models[provider];
+		for (const model of Object.values(providerModels)) {
+			if (model.id === modelId) {
+				return model;
+			}
+		}
+	}
+	return null;
+}
+
+export function doesModelExist(model: Model): boolean {
+	for (const provider in models) {
+		const providerModels = models[provider];
+		if (providerModels[model.id]) {
+			return true;
+		}
+	}
+	return false;
+}
+
+export function getModelProviderName(model: Model | null): string | null {
+	if (!model) return null;
+	for (const provider in models) {
+		const providerModels = models[provider];
+		for (const modelEntry of Object.values(providerModels)) {
+			if (modelEntry.id === model.id) {
+				return provider;
+			}
+		}
+	}
+	return null;
+}
+
+export function getModelName(model: Model): string | null {
+	for (const provider in models) {
+		const providerModels = models[provider];
+		const name = Object.keys(providerModels).find(
+			(name) => providerModels[name].id === model.id
+		);
+		if (name) {
+			return name;
+		}
+	}
+	return null;
 }

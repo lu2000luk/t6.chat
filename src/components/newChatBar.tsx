@@ -11,8 +11,13 @@ import {
 import { Button } from "./ui/button";
 import OpenAI from "./logos/openai";
 import { motion } from "motion/react";
+import { ModelPicker } from "./modelPicker";
+import { useState } from "react";
+import { getModelById, Model } from "@/lib/models";
 
 export function NewChatBar() {
+	const [model, setModel] = useState<Model | null>(null);
+
 	return (
 		<>
 			<div className="flex flex-col p-2 gap-2 rounded-md bg-secondary border-1 shadow-md">
@@ -34,25 +39,14 @@ export function NewChatBar() {
 				</div>
 				<div className="flex gap-2 items-center justify-between">
 					<div className="model flex items-center gap-2">
-						<motion.div
-							whileTap={{
-								scale: 0.95,
-							}}
-							className="flex items-center gap-2 hover:bg-black/30 rounded p-2 cursor-pointer"
-						>
-							<OpenAI className="w-4 h-4" />
-							<span className="text-xs">GPT-o3</span>
-						</motion.div>
-
-						<motion.div
-							whileTap={{
-								scale: 0.95,
-							}}
-							className="flex items-center gap-2 hover:bg-black/30 rounded p-2 cursor-pointer"
-						>
-							<Brain className="w-4 h-4" />
-							<span className="text-xs">Medium thinking</span>
-						</motion.div>
+						<ModelPicker authenticated={false} setModel={() => {
+							localStorage.setItem("selectedModel", model?.id || "gemini-2.0-flash");
+							if (model === null) {
+								setModel(getModelById("gemini-2.0-flash"));
+							} else {
+								setModel(model);
+							}
+						}} model={model} />
 					</div>
 
 					<div className="features flex items-center gap-1">
