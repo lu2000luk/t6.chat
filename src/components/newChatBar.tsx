@@ -39,8 +39,9 @@ export function NewChatBar() {
 				</div>
 				<div className="flex gap-2 items-center justify-between">
 					<div className="model flex items-center gap-2">
-						<ModelPicker authenticated={false} setModel={() => {
+						<ModelPicker authenticated={false} setModel={(model: Model) => {
 							localStorage.setItem("selectedModel", model?.id || "gemini-2.0-flash");
+							console.log("Selected model:", model);
 							if (model === null) {
 								setModel(getModelById("gemini-2.0-flash"));
 							} else {
