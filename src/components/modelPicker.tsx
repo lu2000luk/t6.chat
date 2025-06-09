@@ -1,3 +1,5 @@
+"use client";
+
 export function ModelPicker({
     setModel,
     model,

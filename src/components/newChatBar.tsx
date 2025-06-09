@@ -1,8 +1,16 @@
 "use client";
 
-import { Brain, Code, LucideImage, Paperclip, Search, Send } from "lucide-react";
+import {
+	Brain,
+	Code,
+	LucideImage,
+	Paperclip,
+	Search,
+	Send,
+} from "lucide-react";
 import { Button } from "./ui/button";
 import OpenAI from "./logos/openai";
+import { motion } from "motion/react";
 
 export function NewChatBar() {
 	return (
@@ -16,7 +24,7 @@ export function NewChatBar() {
 						placeholder="Ask anything..."
 					></input>
 
-                    <Button className="items-center" variant={"outline"}>
+					<Button className="items-center" variant={"outline"}>
 						<Paperclip />
 					</Button>
 
@@ -25,29 +33,39 @@ export function NewChatBar() {
 					</Button>
 				</div>
 				<div className="flex gap-2 items-center justify-between">
-                    <div className="model flex items-center gap-2">
-                        <div className="flex items-center gap-2 hover:bg-black/30 rounded p-2 cursor-pointer">
-						    <OpenAI className="w-4 h-4" />
-						    <span className="text-xs">GPT-o3</span>
-					    </div>
+					<div className="model flex items-center gap-2">
+						<motion.div
+							whileTap={{
+								scale: 0.95,
+							}}
+							className="flex items-center gap-2 hover:bg-black/30 rounded p-2 cursor-pointer"
+						>
+							<OpenAI className="w-4 h-4" />
+							<span className="text-xs">GPT-o3</span>
+						</motion.div>
 
-                        <div className="flex items-center gap-2 hover:bg-black/30 rounded p-2 cursor-pointer">
-						    <Brain className="w-4 h-4" />
-						    <span className="text-xs">Medium thinking</span>
-					    </div>
-                    </div>
-					
+						<motion.div
+							whileTap={{
+								scale: 0.95,
+							}}
+							className="flex items-center gap-2 hover:bg-black/30 rounded p-2 cursor-pointer"
+						>
+							<Brain className="w-4 h-4" />
+							<span className="text-xs">Medium thinking</span>
+						</motion.div>
+					</div>
+
 					<div className="features flex items-center gap-1">
-                        <FeatureButton>
-                            <LucideImage className="w-4 h-4" />
-                            <span className="text-xs">Image Creator</span>
-                        </FeatureButton>
+						<FeatureButton>
+							<LucideImage className="w-4 h-4" />
+							<span className="text-xs">Image Creator</span>
+						</FeatureButton>
 
-                        <FeatureButton>
-                            <Search className="w-4 h-4" />
-                            <span className="text-xs">Deep Search</span>
-                        </FeatureButton>
-                    </div>
+						<FeatureButton>
+							<Search className="w-4 h-4" />
+							<span className="text-xs">Deep Search</span>
+						</FeatureButton>
+					</div>
 				</div>
 			</div>
 		</>
@@ -56,8 +74,13 @@ export function NewChatBar() {
 
 function FeatureButton({ children }: { children: React.ReactNode }) {
 	return (
-		<div className="flex text-muted-foreground items-center gap-1 hover:bg-black/30 rounded p-2 cursor-pointer">
+		<motion.div
+			whileTap={{
+				scale: 0.95,
+			}}
+			className="flex text-muted-foreground items-center gap-1 hover:bg-black/30 rounded p-2 cursor-pointer"
+		>
 			{children}
-		</div>
+		</motion.div>
 	);
 }

@@ -474,7 +474,7 @@ export const models: ModelList = {
     }
 };
 
-interface Model {
+export interface Model {
 	id: string;
 	requiresApiKey: boolean;
 	requiresAuth: boolean;
