@@ -119,7 +119,7 @@ function SidebarItem({
 			onClick={onClick}
 		>
 			{icon}
-			<span className="truncate text-sm">{label}</span>
+			<span className="truncate text-sm select-none">{label}</span>
 		</motion.div>
 	);
 }
