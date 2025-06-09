@@ -491,6 +491,7 @@ interface Model {
 	thinking: boolean;
 	thinkingLevels?: string[];
 	exposesThinking?: boolean;
+    freeUnlimited?: boolean;
 }
 
 interface ModelList {
