@@ -166,8 +166,8 @@ export function ModelPicker({
 						const virtualizer = providerVirtualizers[providerIdx];
 						return (
 							<div key={provider} className="mb-2">
-								<div className="font-semibold text-lg uppercase text-muted-foreground py-1">
-									{provider}
+								<div className="font-semibold text-md text-muted-foreground py-1">
+									{provider[0].toUpperCase() + provider.slice(1)}
 								</div>
 								<div
 									style={{
