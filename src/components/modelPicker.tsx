@@ -37,6 +37,7 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Input } from "./ui/input";
+import { useVirtualizer } from '@tanstack/react-virtual';
 
 export function ModelPicker({
 	setModel,
@@ -64,8 +65,6 @@ export function ModelPicker({
 	};
 
 	const [search, setSearch] = useState("");
-
-	// Calcolo diretto dei provider filtrati senza useMemo e senza animazioni
 	const filteredProviders =
 		search.trim() === ""
 			? Object.entries(models).map(([provider, providerModels]) => ({
@@ -88,13 +87,29 @@ export function ModelPicker({
 					})
 					.filter(Boolean) as { provider: string; filteredModels: [string, Model][] }[];
 
+	const GRID_COLS = 3;
+	const [parentDiv, setParentDiv] = useState<HTMLDivElement | null>(null);
+
+	const providerVirtualizers = filteredProviders.map(({ filteredModels }) => {
+		const rows = Math.ceil(filteredModels.length / GRID_COLS);
+		return useVirtualizer({
+			count: rows,
+			getScrollElement: () => parentDiv,
+			estimateSize: () => 120,
+			gap: 4,
+			overscan: 6,
+		});
+	});
+
 	useEffect(() => {
 		if (!model) {
 			const storedModel = localStorage.getItem("selectedModel");
 			if (storedModel) {
-				setModel(getModelById(storedModel));
+				const selected = getModelById(storedModel);
+				if (selected) setModel(selected);
 			} else {
-				setModel(getModelById("gemini-2.0-flash"));
+				const fallback = getModelById("gemini-2.0-flash");
+				if (fallback) setModel(fallback);
 			}
 		}
 	}, []);
@@ -138,80 +153,101 @@ export function ModelPicker({
 				</div>
 			</PopoverTrigger>
 			<PopoverContent asChild side="bottom">
-				<div className="h-64 w-md overflow-y-auto no-scrollbar">
+				<div className="h-64 w-md overflow-y-auto no-scrollbar" ref={setParentDiv}>
 					<Input
 						placeholder="Search models..."
 						value={search}
 						onChange={e => setSearch(e.target.value)}
 					/>
 
-					{filteredProviders.map(({ provider, filteredModels }) => (
-						<div key={provider} className="mb-2">
-							<div className="font-semibold text-lg uppercase text-muted-foreground py-1">
-								{provider}
-							</div>
-							<div className="grid grid-cols-3 gap-1">
-								{filteredModels.map(([name, m]) => (
-									<div
-										key={m.id}
-										className={
-											"p-1 cursor-pointer transition-all min-h-25 rounded flex flex-col items-center justify-center border-1 " +
-											(model?.id === m.id
-												? "bg-secondary border-primary"
-												: "bg-black/20 hover:bg-black/40")
-										}
-										onClick={() => {
-											setModel(m);
-										}}
-									>
-										<div className="scale-120">
-											{iconMap[getModelProviderName(m) as IconMapKey] ||
-												iconMap.unknown}
+					{/* Lista virtualizzata per provider, ognuno con la sua griglia */}
+					{filteredProviders.map(({ provider, filteredModels }, providerIdx) => {
+						const rows = Math.ceil(filteredModels.length / GRID_COLS);
+						const virtualizer = providerVirtualizers[providerIdx];
+						return (
+							<div key={provider} className="mb-2">
+								<div className="font-semibold text-lg uppercase text-muted-foreground py-1">
+									{provider}
+								</div>
+								<div
+									style={{
+										height: `${virtualizer.getTotalSize()}px`,
+										position: 'relative',
+									}}
+								>
+									{virtualizer.getVirtualItems().map(virtualRow => (
+										<div
+											key={virtualRow.index}
+											style={{
+												position: 'absolute',
+												top: `${virtualRow.start}px`,
+												left: 0,
+												width: '100%',
+												height: `${virtualRow.size}px`,
+											}}
+											className="grid grid-cols-3 gap-1"
+										>
+											{Array.from({ length: GRID_COLS }).map((_, colIdx) => {
+												const modelIdx = virtualRow.index * GRID_COLS + colIdx;
+												if (modelIdx >= filteredModels.length) return null;
+												const [name, m] = filteredModels[modelIdx];
+												return (
+													<div
+														key={m.id}
+														className={
+															"p-1 cursor-pointer transition-all min-h-25 rounded flex flex-col items-center justify-center border-1 " +
+															(model?.id === m.id
+																? "bg-secondary border-primary"
+																: "bg-black/20 hover:bg-black/40")
+														}
+														onClick={() => setModel(m)}
+													>
+														<div className="scale-120">
+															{iconMap[getModelProviderName(m) as IconMapKey] ||
+																iconMap.unknown}
+														</div>
+														<span className="text-xs mt-2">{m.shortName}</span>
+														<div className="features flex items-center gap-1 mt-2">
+															{m.thinking && (
+																<TooltipItem content="Thinking">
+																	<Brain className="w-4 h-4" />
+																</TooltipItem>
+															)}
+															{m.features.attachmentsAudio && (
+																<TooltipItem content="Accept audio input">
+																	<Mic className="w-4 h-4" />
+																</TooltipItem>
+															)}
+															{m.features.attachmentsImage && (
+																<TooltipItem content="Accept image input">
+																	<Image className="w-4 h-4" />
+																</TooltipItem>
+															)}
+															{m.features.attachmentsVideo && (
+																<TooltipItem content="Accept video input">
+																	<Video className="w-4 h-4" />
+																</TooltipItem>
+															)}
+															{m.features.tools && (
+																<TooltipItem content="Tools">
+																	<Tool className="w-4 h-4" />
+																</TooltipItem>
+															)}
+															{m.features.search && (
+																<TooltipItem content="Search">
+																	<Search className="w-4 h-4" />
+																</TooltipItem>
+															)}
+														</div>
+													</div>
+												);
+											})}
 										</div>
-										<span className="text-xs mt-2">{m.shortName}</span>
-
-										<div className="features flex items-center gap-1 mt-2">
-											{m.thinking && (
-												<TooltipItem content="Thinking">
-													<Brain className="w-4 h-4" />
-												</TooltipItem>
-											)}
-
-											{m.features.attachmentsAudio && (
-												<TooltipItem content="Accept audio input">
-													<Mic className="w-4 h-4" />
-												</TooltipItem>
-											)}
-
-											{m.features.attachmentsImage && (
-												<TooltipItem content="Accept image input">
-													<Image className="w-4 h-4" />
-												</TooltipItem>
-											)}
-
-											{m.features.attachmentsVideo && (
-												<TooltipItem content="Accept video input">
-													<Video className="w-4 h-4" />
-												</TooltipItem>
-											)}
-
-											{m.features.tools && (
-												<TooltipItem content="Tools">
-													<Tool className="w-4 h-4" />
-												</TooltipItem>
-											)}
-
-											{m.features.search && (
-												<TooltipItem content="Search">
-													<Search className="w-4 h-4" />
-												</TooltipItem>
-											)}
-										</div>
-									</div>
-								))}
+									))}
+								</div>
 							</div>
-						</div>
-					))}
+						);
+					})}
 				</div>
 			</PopoverContent>
 		</Popover>

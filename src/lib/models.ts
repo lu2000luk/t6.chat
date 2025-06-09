@@ -119,7 +119,7 @@ export const models: ModelList = {
 			features: {},
 			contextLength: 128000,
 			thinking: true,
-			shortName: "Llama 70B Distill R1 ",
+			shortName: "Llama 70B Distill R1",
 		},
 		"Llama 3.1 8B Instant": {
 			id: "llama-3.1-8b-instant",
@@ -139,41 +139,41 @@ export const models: ModelList = {
 			thinking: false,
 			shortName: "Llama 3.3 70B",
 		},
-		"Llama3 70B 8192": {
+		"Llama 3 70B 8192": {
 			id: "llama3-70b-8192",
 			requiresApiKey: false,
 			requiresAuth: true,
 			features: {},
 			contextLength: 8192,
 			thinking: false,
-			shortName: "Llama3 70B",
+			shortName: "Llama 3 70B",
 		},
-		"Llama3 8B 8192": {
+		"Llama 3 8B 8192": {
 			id: "llama3-8b-8192",
 			requiresApiKey: false,
 			requiresAuth: true,
 			features: {},
 			contextLength: 8192,
 			thinking: false,
-			shortName: "Llama3 8B",
+			shortName: "Llama 3 8B",
 		},
-		"Llama-4 Maverick 17B Instruct": {
+		"Llama 4 Maverick 17B Instruct": {
 			id: "meta-llama/llama-4-maverick-17b-128e-instruct",
 			requiresApiKey: false,
 			requiresAuth: true,
 			features: {},
 			contextLength: 131072,
 			thinking: false,
-			shortName: "Llama-4 Maverick",
+			shortName: "Llama 4 Maverick",
 		},
-		"Llama-4 Scout 17B Instruct": {
+		"Llama 4 Scout 17B Instruct": {
 			id: "meta-llama/llama-4-scout-17b-16e-instruct",
 			requiresApiKey: false,
 			requiresAuth: true,
 			features: {},
 			contextLength: 131072,
 			thinking: false,
-			shortName: "Llama-4 Scout",
+			shortName: "Llama 4 Scout",
 		},
 		"Qwen QwQ 32B": {
 			id: "qwen-qwq-32b",
@@ -333,7 +333,7 @@ export const models: ModelList = {
 			exposesThinking: false,
 			shortName: "o1",
 		},
-		"o1 pro": {
+		"o1 Pro": {
 			id: "o1-pro",
 			features: {
 				tools: true,
@@ -345,7 +345,7 @@ export const models: ModelList = {
 			thinking: true,
 			thinkingLevels: ["low", "medium", "high"],
 			exposesThinking: false,
-			shortName: "o1 pro",
+			shortName: "o1 Pro",
 		},
 		"GPT-4.1": {
 			id: "gpt-4.1",
@@ -420,7 +420,7 @@ export const models: ModelList = {
 			thinking: false,
 			shortName: "GPT-4o Mini",
 		},
-		"GPT-4o mini Audio": {
+		"GPT-4o Mini Audio": {
 			id: "gpt-4o-mini-audio-preview",
 			features: {
 				tools: true,
@@ -433,7 +433,7 @@ export const models: ModelList = {
 			thinking: false,
 			shortName: "GPT-4o Mini Audio",
 		},
-		"GPT-4.1 mini": {
+		"GPT-4.1 Mini": {
 			id: "gpt-4.1-mini",
 			features: {
 				tools: true,

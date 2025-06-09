@@ -22,12 +22,17 @@ export function NewChatBar() {
 		<>
 			<div className="flex flex-col p-2 gap-2 rounded-md bg-secondary border-1 shadow-md">
 				<div className="flex items-center gap-1">
-					<input
-						type="text"
+					<textarea
 						autoFocus
-						className="ring-none border-none outline-0 bg-transparent text-sm w-md pl-1"
+						className="ring-none border-none outline-0 bg-transparent text-sm w-md pl-1 resize-none overflow-hidden"
 						placeholder="Ask anything..."
-					></input>
+						rows={1}
+						onInput={e => {
+							const target = e.target as HTMLTextAreaElement;
+							target.style.height = "auto";
+							target.style.height = `${target.scrollHeight}px`;
+						}}
+					></textarea>
 
 					<Button className="items-center" variant={"outline"}>
 						<Paperclip />
