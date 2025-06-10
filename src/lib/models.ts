@@ -1,3 +1,5 @@
+import { get } from "http";
+
 export const models: ModelList = {
 	google: {
 		"Gemini 1.5 Flash 8B": {
@@ -573,4 +575,21 @@ export function getModelName(model: Model): string | null {
 		}
 	}
 	return null;
+}
+
+export function canModelBeUsed(model: Model, authenticated: false | string | null, keys: { [key: string]: string }): boolean {
+	if (!doesModelExist(model)) {
+		return false;
+	}
+	
+	if (model.requiresAuth && !authenticated) {
+		return false;
+	}
+
+	const providerName = getModelProviderName(model);
+	if (model.requiresApiKey && (!providerName || !keys[providerName])) {
+		return false;
+	}
+	
+	return true;
 }
