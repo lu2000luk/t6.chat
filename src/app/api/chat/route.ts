@@ -1,5 +1,6 @@
+import { ask } from "@/lib/ai";
 import { Chat, ChatMessage } from "@/lib/chat";
-import { canModelBeUsed, doesModelExist, Model } from "@/lib/models";
+import { canModelBeUsed, doesModelExist, getModelById, Model, models } from "@/lib/models";
 import { getRatelimitKey, isRatelimited } from "@/lib/utils";
 
 export async function POST(request: Request) {
@@ -25,15 +26,17 @@ export async function POST(request: Request) {
         return new Response("Authenticated must be a boolean or string", { status: 400 });
     }
 
-    if (!doesModelExist(message.model)) {
-        return new Response("Model not found", { status: 400 });
-    }
-
     if (authenticated === true && typeof authenticated !== "string") {
         return new Response("Authenticated must be a string when true", { status: 400 });
     }
 
-    if (!canModelBeUsed(message.model, authenticated, keys)) {
+    const model = getModelById(message.model.id);
+
+    if (!model) {
+        return new Response("Model not found", { status: 400 });
+    }
+
+    if (!canModelBeUsed(model, authenticated, keys)) {
         return new Response("Model cannot be used with the provided authentication and keys", { status: 403 });
     }
 
@@ -45,5 +48,12 @@ export async function POST(request: Request) {
 
     if (await isRatelimited(rateLimitKey)) {
         return new Response("Rate limit exceeded", { status: 429 });
+    }
+
+    const textStream = ask(chat, message, keys);
+
+    if (!authenticated) {
+        console.log("Streaming response for unauthenticated user...");
+        return textStream.toDataStreamResponse();
     }
 }

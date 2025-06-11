@@ -43,7 +43,7 @@ export async function isRatelimited(
   const databases = new Databases(getServerClient());
   const db_id = "misc";
   const collection_id = "ratelimits";
-  const document_id = rateLimitKey;
+  const document_id = rateLimitKey.substring(rateLimitKey.indexOf('-') + 1).substring(0, 36);
   const now = Date.now();
 
   const isIp = rateLimitKey.startsWith("ip-");

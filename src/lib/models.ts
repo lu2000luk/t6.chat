@@ -578,10 +578,6 @@ export function getModelName(model: Model): string | null {
 }
 
 export function canModelBeUsed(model: Model, authenticated: false | string | null, keys: { [key: string]: string }): boolean {
-	if (!doesModelExist(model)) {
-		return false;
-	}
-	
 	if (model.requiresAuth && !authenticated) {
 		return false;
 	}
